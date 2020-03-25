@@ -1,0 +1,8 @@
+radiant_comp: [28, 54, 37, 65, 73]
+dire_comp: [90, 107, 2, 63, 74]
+radiant_bans: [80, 106, 38, 57, 39]
+dire_bans: [108, 8, 55, 11, 46]
+dire_score: 30
+radiant_score: 18
+radiant_win: false
+duration: 2529
