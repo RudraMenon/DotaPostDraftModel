@@ -7,7 +7,6 @@ file.close
 file = File.open('apiMatches/counter.txt')
 counter = file.read.to_i
 file.close
-puts counter
 matchids = data.split("\n")
 
 callSite = "https://api.opendota.com/api/matches/"
@@ -40,7 +39,6 @@ for i in 0..59
         if item == "draft_timings"
             if arr[item] == nil
                 a = badDevs arr
-                puts a
                 a.each do |k, v|
                     goodInfo[k] = v
                 end
