@@ -12,45 +12,70 @@ matchids = data.split("\n")
 
 callSite = "https://api.opendota.com/api/matches/"
 req = ["dire_score", "draft_timings", "radiant_score", "radiant_win", "duration"]
-begin
+
+def badDevs arr
+    item = "picks_bans"
+    goodInfos = {"radiant_comp" => [], "dire_comp" => [], "radiant_bans" => [], "dire_bans" => []}
+    arr[item].each do |pick|
+        if pick["team"] == 0
+            pick["team"] = "radiant"
+        else 
+            pick["team"] = "dire"
+        end
+        if !pick["is_pick"]
+            goodInfos[pick["team"]+"_bans"].push(pick["hero_id"])
+        else
+            goodInfos[pick["team"]+"_comp"].push(pick["hero_id"])
+        end
+    end
+    goodInfos
+end
+
 while counter < 85000 do
 for i in 0..59
     goodInfo = {"radiant_comp" => [], "dire_comp" => [], "radiant_bans" => [], "dire_bans" => []}
     response = HTTParty.get(callSite+matchids[counter])
     arr = JSON.parse(response.body)
     req.each do |item|
-        if item == "draft_timings" 
-            arr[item].each do |pick|
-                if pick["active_team"] == 2
-                    pick["active_team"] = "radiant"
-                else 
-                    pick["active_team"] = "dire"
+        if item == "draft_timings"
+            if arr[item] == nil
+                a = badDevs arr
+                puts a
+                a.each do |k, v|
+                    goodInfo[k] = v
                 end
-                if !pick["pick"]
-                goodInfo[pick["active_team"]+"_bans"].push(pick["hero_id"])
-                else
-                    goodInfo[pick["active_team"]+"_comp"].push(pick["hero_id"])
+            else
+                arr[item].each do |pick|
+                    if pick["active_team"] == 2 
+                        pick["active_team"] = "radiant"
+                    else 
+                        pick["active_team"] = "dire"
+                    end
+                    if !pick["pick"]
+                        goodInfo[pick["active_team"]+"_bans"].push(pick["hero_id"])
+                    else
+                        goodInfo[pick["active_team"]+"_comp"].push(pick["hero_id"])
+                    end
                 end
             end
         else            
             goodInfo[item] = arr[item]
         end
     end
+
     respStr = ""
     goodInfo.each do |k,v|
         respStr += k + ": " + v.to_s+"\n"
     end
-    # puts respStr
-    
-    File.write("apiMatches/"+matchids[counter]+".txt", respStr)
+
     counter += 1
+
+    File.write("apiMatches/apiMatches/"+matchids[counter]+".txt", respStr)
+    File.write("apiMatches/counter.txt", counter.to_s)
+    
     puts counter
 end
-sleep(60-16)
-File.write("apiMatches/counter.txt", counter.to_s)
-end
-rescue 
-    t2 = Time.now
-    puts t2-t1
+
+sleep(60)
 
 end
