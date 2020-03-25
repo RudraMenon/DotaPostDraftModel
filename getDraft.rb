@@ -35,6 +35,7 @@ for i in 0..59
     goodInfo = {"radiant_comp" => [], "dire_comp" => [], "radiant_bans" => [], "dire_bans" => []}
     response = HTTParty.get(callSite+matchids[counter])
     arr = JSON.parse(response.body)
+    begin
     req.each do |item|
         if item == "draft_timings"
             if arr[item] == nil
@@ -65,9 +66,12 @@ for i in 0..59
     goodInfo.each do |k,v|
         respStr += k + ": " + v.to_s+"\n"
     end
+    
+    rescue 
+        respStr = response
+    end
 
     counter += 1
-
     File.write("apiMatches/"+matchids[counter]+".txt", respStr)
     File.write("apiMatches/counter.txt", counter.to_s)
     
