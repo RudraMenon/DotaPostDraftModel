@@ -1,6 +1,6 @@
 require 'httparty'
 require 'json'
-t1 = Time.now
+
 file = File.open('matchids.txt')
 data = file.read
 file.close
@@ -70,7 +70,7 @@ for i in 0..59
 
     counter += 1
 
-    File.write("apiMatches/apiMatches/"+matchids[counter]+".txt", respStr)
+    File.write("apiMatches/"+matchids[counter]+".txt", respStr)
     File.write("apiMatches/counter.txt", counter.to_s)
     
     puts counter
